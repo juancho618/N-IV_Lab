@@ -1,0 +1,117 @@
+\documentclass{article}
+\usepackage{amssymb}
+
+\usepackage{graphicx}
+
+\begin{document}
+    \title{Navigation and Intelligent Vehicles, Lab session 1 Report}
+    \author{Juan Jose Soriano Escobar}
+    \maketitle
+
+Remarks
+
+This lab session is developed using Python Instead of Matlab, because I have more experience working with python form previos courses. Additionally,
+Python has several libraries that could e use to easily deploy the solution in a web server or in a embbeded system.
+
+On top of Python, I've used numpy librabry to manipulate multidimensional array objects, and pylab to display the results in graphs. 
+
+With all thas said, I expect to achive the same results and learning as working with Matlab.
+
+Simulate measurement data
+
+As  first step and trying to berfore going into the Kalman Filter application  or coding the problem itself, I started by creating the measuremtns
+as was sugested in the Laboratory document. A normal random distributed noise centered in 0.0 and with a standart deviation 0.1, for a
+costant value of 0.26578 voltages.
+
+The voltages sampled were simulated for 50 measuremtns using the fragment of code [1] and illustrated in the figure [1].
+
+**code**
+
+**results image - with comments**
+
+Program the Kalman Filter
+
+Following the Kalman FIlter lofic from the theory, the code is divided in two functions. The first one is the  prediction function for the
+future value of the state value and the error covariance. The function developed for the preditions is presented in the secton of code [2]
+
+**code**
+
+The prediction function predict the values of the state value and the error covariance receving 5 arguments:
+
+X: The state estimate of the previous step.
+P: The state covariance of the previous step.
+A: The transition matrix.
+Q: The process noise covariance marix.
+B: The input effect matrix.
+U: The control input.
+
+With this argumenst the new X and P are predictec based on the reviewed formulas [1] [2].
+
+Once the prediction is done, it is necessary to update the measument and verify the error prediction based on the real mesuared value.
+In this order, the update functions presented in the sectiom [5], receives 6 arguments:
+
+X: The state estimate.
+P: The state covariance.
+C: The measurament matrix.
+K: The gain or blending value (Kalman gain matrix).
+Z: The measument.
+R: The measurement covariance matrix.
+
+To compute the residuals and calculate the gain or blending value K, together with the updated value of the state estimate X and the
+state covariance P. 
+
+The calculations done in the update function are based on the ecuatiion [1]. Where MP is the measument prediction, MPC is the measurement
+prediction covariance and residual is the difference between the measured and predicted value.
+
+This two functions are enough to apply the Kalman Filter to the specific case of study. Thereafter, a for loop is needed to simulated the
+50 iterations, where the function and update value are going to be implemented as is shown in the section [6].
+
+**insert section**
+
+At this point, the code is ready to be applied in the the voltage measument problem.
+
+Code implemention.
+
+As always in any algorithm or code  to be executed, the first step is to declare the variables with it initial values (see fig [x]).
+
+A = 1 # The state is a constant
+U = 0 # There is no control input
+B = 0 # There is no control input
+C = 1 # The noisy measurement is direct
+Q = 10e-5 # Process variance
+R = 0.01 # given from the problem as a constant noise
+X = np.zeros(iterations) # Initializing voltage estimate the array with the number of iterations 
+P = np.zeros(iterations) # Initializing error estimate the array with the number of iterations
+K = np.zeros(iterations) # gain or blending factor initialization
+ISE = np.zeros(iterations) # Instant Square Error
+MSE = np.zeros(iterations) # Mean Square Error
+x = np.full(iterations, 0.26578)
+noise = np.random.normal(0.0, 0.1, iterations) # for 50 measurements simulated
+Z = x + noise
+
+# initial state abd error covariance values
+X[0] = 0.0
+P[0] = 1.0
+
+There we define from the given problem, a Process variance Q of 10e-5, a constant noise R of 0.01 and a measure matrix C=1.
+
+Results
+
+Q = 10e-5 and R = 0.01
+
+Q = 10e-5 and R = 0.00001 (R increased on a fctor of 1000)
+
+Q = 10e-5 and R = 10 (R decreased on a factor of 1000)
+
+Q = 10e-8 and R = 0.01 (Q increased on a fctor of 1000)
+
+Q = 10e-2 and R = 0.01 (Q decreased on a fctor of 1000)
+
+References
+
+lab document
+http://biorobotics.ri.cmu.edu/papers/sbp_papers/integrated3/kleeman_kalman_basics.pdf
+https://www.cl.cam.ac.uk/~rmf25/papers/Understanding%20the%20Basis%20of%20the%20Kalman%20Filter.pdf
+Implementation of Kalman Filter with Python Language ... pdf
+
+\end{document}
