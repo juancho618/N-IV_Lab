@@ -24,7 +24,7 @@ def prediction(X, P, A, Q, B, U):
     P = np.dot(A, np.dot(P, A)) + Q # (A - no transpose because it is a scalar)
     return X, P
 
-def update(     ):
+def update(X, P, C, K, Z, R):
     MP = np.dot(C, X) # measurement prediction
     residual = Z - MP # the residual of the prediction
     MPC = np.dot(C, np.dot(P, C))  + R    # measurement prediction covariance ( C- no transpose because it is a scalar)
@@ -52,12 +52,17 @@ ISE = np.zeros(iterations) # Instant Square Error
 MSE = np.zeros(iterations) # Mean Square Error
 x = np.full(iterations, 0.26578)
 noise = np.random.normal(0.0, 0.1, iterations) # for 50 measurements simulated
-Z = x + noise
+#Z = x + noise #just for the first time
+
+Z = np.genfromtxt('data.csv', delimiter=',')
+# to save the data in csv the first time
+# data = np.asarray(Z);
+# np.savetxt('data.csv', data, delimiter=',')
 
 # initial values
 X[0] = 0.0
-P[0] = 1.0
-
+P[0] = 0.001
+    
 # Simulation for 50 measurements
 for i in range(1, iterations):    
     # prediction
@@ -77,6 +82,7 @@ pylab.legend()
 pylab.xlabel('Iteration')
 pylab.ylabel('Voltage [V]')
 pylab.title('Simulation results')
+#pylab.savefig('P001_.png')
 
 pylab.figure()
 valid_iter = range(1,iterations) 
@@ -84,7 +90,7 @@ pylab.plot(valid_iter,P[valid_iter],label='Error estimate')
 pylab.xlabel('Iteration')
 pylab.ylabel('covariance')
 pylab.title('Estimate error covariance (P)')
-pylab.setp(pylab.gca(),'ylim',[0,.01])
+#pylab.savefig('P001_P.png')
 
 pylab.figure()
 valid_iter = range(0,iterations) 
@@ -92,6 +98,7 @@ pylab.plot(valid_iter,K[valid_iter],label='a priori error estimate')
 pylab.xlabel('Iteration')
 pylab.title('Kalman gain (K)')
 pylab.ylabel('gain')
+#pylab.savefig('P001_K.png')
 
 pylab.figure()
 valid_iter = range(1,iterations) 
@@ -100,4 +107,6 @@ pylab.plot(valid_iter, ISE[valid_iter],label='ISE', color='b')
 pylab.xlabel('Iteration')
 pylab.ylabel('$Spread\ error [V^2]$')
 pylab.title('Error')
+#pylab.savefig('P001_E.png')
+
 pylab.show()
