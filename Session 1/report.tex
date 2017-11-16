@@ -5,6 +5,9 @@
 \usepackage{graphicx}
 
 
+\setlength{\parindent}{1em}
+\setlength{\parskip}{1em} % length of the spacing
+
 \lstset{ % General setup for the package
     language=Python,
     basicstyle=\small\sffamily,
@@ -17,51 +20,58 @@
     showtabs=false,
     keepspaces,
     commentstyle=\color{red},
-    keywordstyle=\color{blue}
+    keywordstyle=\color{blue},
+    emphstyle=\ttb\color{deepred},    
+    stringstyle=\color{deepgreen}
 }
+
 \begin{document}
     \title{Navigation and Intelligent Vehicles, Lab session 1 Report}
     \author{Juan Jose Soriano Escobar}
     \maketitle
     \newpage
 
-    Remarks
+    \section*{Disclaimer}
 
-    This lab session is developed using Python Instead of Matlab, because I have more experience working with python form previos courses. Additionally,
-    Python has several libraries that could e use to easily deploy the solution in a web server or in a embbeded system.
+    This lab session is developed with Python Instead of Matlab, due to the lack of experience with Matlab
+    and because I am more familiar with Python from the previous courses in the Master program. Additionally,
+    Python has several libraries that could be easily use to deploy the solution in a web server or in a embedded system.
 
-    On top of Python, I've used numpy librabry to manipulate multidimensional array objects, and pylab to display the results in graphs. 
+    On top of Python, I've used numpy library to manipulate multidimensional array objects, and pylab to display the results in graphs. 
 
-    With all thas said, I expect to achive the same results and learning as working with Matlab.
+    With all that said, I expect to achieve the same results and learn the same concepts as working with Matlab.
 
-    \section{Simulate measurement data}
+    \section{Simulated measurement data}
     
 
-    As  first step and trying to berfore going into the Kalman Filter application  or coding the problem itself, I started by creating the measuremtns
-    as was sugested in the Laboratory document. A normal random distributed noise centered in 0.0 and with a standart deviation 0.1, for a
-    costant value of 0.26578 voltages.
+    As  first, before going into the Kalman Filter application  or coding the model itself, I started by creating the measurements
+    as was suggested in the Laboratory document \cite{LabManual}. A normal random distributed noise centered in 0.0 with a standard deviation 0.1, 
+    for a constant value of 0.26578 voltages.
 
-    The voltages sampled were simulated for 50 measuremtns using the fragment of code [1] and illustrated in the figure [1].
+    The voltages sampled were simulated for 50 measurements using the fragment of code \ref{lst:measurementData} and illustrated in the figure \ref{fig:data}.
 
-    **code**
-    \begin{lstlisting}
-        print('asd')
-        \end{lstlisting}
+    \begin{lstlisting}[language=Python, caption= Measurement data simulation, label={lst:measurementData}]
+        import numpy as np
 
-    **results image - with comments**
+        # for 50 measurements simulated
+        iterations = 50
+
+        x = np.full(iterations, 0.26578)
+        noise = np.random.normal(0.0, 0.1, iterations) 
+        Z = x + noise
+    \end{lstlisting}
     
-    % \begin{figure}
-    %     \includegraphics[width=\linewidth]{}
-    %     \caption{A boat.}
-    %     \label{fig:boat1}
-    %   \end{figure}
+    \begin{figure}
+        \includegraphics{./img/nc_.png}
+        \caption{Simulated measurements.}
+        \label{fig:data}
+    \end{figure}
       
-    %   Figure \ref{fig:boat1} shows a boat.
 
     \section{Programing the Kalman Filter}
 
-    Following the Kalman FIlter lofic from the theory, the code is divided in two functions. The first one is the  prediction function for the
-    future value of the state value and the error covariance. The function developed for the preditions is presented in the secton of code [2]
+    Following the Kalman Filter logic from the theory, the code is divided in two functions. The first one is the  prediction function for the
+    future value of the state value and the error covariance. The function developed for the predictions is presented in the section of code [2]
 
     **code**
 
@@ -69,31 +79,31 @@
         x = x + 1
     \end{equation}
 
-    The prediction function predict the values of the state value and the error covariance receving 5 arguments:
+    The prediction function predict the values of the state value and the error covariance receiving 5 arguments:
 
     X: The state estimate of the previous step.
     P: The state covariance of the previous step.
     A: The transition matrix.
-    Q: The process noise covariance marix.
+    Q: The process noise covariance matrix.
     B: The input effect matrix.
     U: The control input.
 
-    With this argumenst the new X and P are predictec based on the reviewed formulas [1] [2].
+    With those arguments the new X and P are predicted based on the reviewed formulas [1] [2].
 
-    Once the prediction is done, it is necessary to update the measument and verify the error prediction based on the real mesuared value.
-    In this order, the update functions presented in the sectiom [5], receives 6 arguments:
+    Once the prediction is done, it is necessary to update the measurement and verify the error prediction based on the real measured value.
+    In this order, the update functions presented in the section [5], receives 6 arguments:
 
     X: The state estimate.
     P: The state covariance.
-    C: The measurament matrix.
+    C: The measurement matrix.
     K: The gain or blending value (Kalman gain matrix).
-    Z: The measument.
+    Z: The measurement.
     R: The measurement covariance matrix.
 
     To compute the residuals and calculate the gain or blending value K, together with the updated value of the state estimate X and the
     state covariance P. 
 
-    The calculations done in the update function are based on the ecuatiion [1]. Where MP is the measument prediction, MPC is the measurement
+    The calculations done in the update function are based on the equation [1]. Where MP is the measurement prediction, 'MPC' is the measurement
     prediction covariance and residual is the difference between the measured and predicted value.
 
     \newpage
@@ -103,7 +113,7 @@
 
     **insert section**
 
-    At this point, the code is ready to be applied in the the voltage measument problem.
+    At this point, the code is ready to be applied in the the voltage measurement problem.
 
     \section{Code implemention}
         
@@ -124,7 +134,7 @@
     noise = np.random.normal(0.0, 0.1, iterations) - for 50 measurements simulated
     Z = x + noise
 
-    initial state abd error covariance values
+    initial state and error covariance values
     X[0] = 0.0
     P[0] = 1.0
 
@@ -134,15 +144,18 @@
 
     Q = 10e-5 and R = 0.01
 
-    Q = 10e-5 and R = 0.00001 (R increased on a fctor of 1000)
+    Q = 10e-5 and R = 0.00001 (R increased on a factor of 1000)
 
     Q = 10e-5 and R = 10 (R decreased on a factor of 1000)
 
-    Q = 10e-8 and R = 0.01 (Q increased on a fctor of 1000)
+    Q = 10e-8 and R = 0.01 (Q increased on a factor of 1000)
 
-    Q = 10e-2 and R = 0.01 (Q decreased on a fctor of 1000)
+    Q = 10e-2 and R = 0.01 (Q decreased on a factor of 1000)
 
-    References
+   
+
+    \bibliography{report}
+    \bibliographystyle{ieeetr}
 
     lab document
     % http://biorobotics.ri.cmu.edu/papers/sbp_papers/integrated3/kleeman_kalman_basics.pdf
