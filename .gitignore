@@ -1,3 +1,14 @@
 report.dvi
 report.log
 report.aux
+report.fls
+report.pdf
+report.synctex.gz
+report.fdb_latexmk
+report.blg
+report.bbl
+report.fdb_latexmk
+report.fls
+report.pyg
+.vscode/
+x.log
