@@ -139,7 +139,7 @@ top=20mm,
 
     At this point, the code is ready to be applied in the the voltage measurement problem.
 
-    \section{Code implemention}
+    \section{Code implementation}
 
     \subsection{Initial values}
         
@@ -383,27 +383,59 @@ top=20mm,
         \end{figure}
     
     \subsection{What happens if you change the initial value of the error covariance P?}
+    
+    I tried P with different values end the result did not changed much for big values or values bigger than 0.1 in general.
+    The first critical value is when P = 0. In the \ref{fig:simulation7} (a) is visible how the filter is not able to estimate the
+    voltage. This is the result of an indetermination in the K gain in the equation (7) from \cite{LabManual},
+    where K is divided by P. 
+
+    With a negative value of P, the covariance will keep on decreasing as  in visible in \ref{fig:simulation7} (c)
+    Increasing the error of the prediction exponentially. This is explained by the negative divisor in the K gain value.
+    
+    On the other hand for a P smaller than the noise and close to R, the figure \ref{fig:simulation7} (b),
+    presents similar Results as the simulation with R = 10. This result is expected, because in the K gain factor R is 
+    basically increased in a factor of a thousand compared with the value of P. Where K could be reduced to 
+    K = P / (P + R).
+
+    In accordance to this results, could be a value from ( 0, + inf.) and preferably higher than the estimate of
+    the measurement variance R.
 
     \begin{figure}
-        \begin{subfigure} {.5\textwidth}  
+        \begin{subfigure} {.3\textwidth}  
             \centering 
             \includegraphics[width=0.8\linewidth]{./img/P0_.png}
-            \caption{Predicted signal from noisy measurements }
+            \caption{P = 0 }
         \end{subfigure}
-        \begin{subfigure}{.5\textwidth}            
+        \begin{subfigure}{.3\textwidth}            
             \centering
             \includegraphics[width=0.8\linewidth]{./img/P001_.png}
-            \caption{Kalman gain factor}
+            \caption{P = 0.001}
+        \end{subfigure}    
+        \begin{subfigure} {.3\textwidth}         
+            \centering
+            \includegraphics[width=0.8\linewidth]{./img/Pneg.png}
+            \caption{P = -0.001}
         \end{subfigure}
-        \caption{Simulation with no zero center noise N(0.5, 0.01).}
+        \caption{Simulation for P = 0, P =  0.001 and P = -0.001}
         \label{fig:simulation7}
     \end{figure}
+    
+
+    \subsection{Does the value of the Kalman gain K contain information?}
+
+    The K gain is and important parameter in the Kalman Filter because it shows the relationship
+    between the magnitude of the input to the magnitude of the output signal. In other words, it determines
+    the relative difference of the voltage in response to a change in the controller output, which is constant 
+    for this case of study.
+
+    \subsection{Are there any other parameters that influence your KF?}
+
+    The Kalman filter depends directly on P (error estimate) and R (estimate of measurement variance) and indirectly
+    on Q which is th process variance use to predict the value of P.
+
     \bibliography{report}
     \bibliographystyle{ieeetr}
-
-    lab document
-    % http://biorobotics.ri.cmu.edu/papers/sbp_papers/integrated3/kleeman_kalman_basics.pdf
-    % https://www.cl.cam.ac.uk/~rmf25/papers/Understanding%20the%20Basis%20of%20the%20Kalman%20Filter.pdf
+    \nocite{*}
     % Implementation of Kalman Filter with Python Language ... pdf
     % http://scottlobdell.me/2014/08/kalman-filtering-python-reading-sensor-input/
 

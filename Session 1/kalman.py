@@ -61,7 +61,7 @@ Z = np.genfromtxt('data.csv', delimiter=',')
 
 # initial values
 X[0] = 0.0
-P[0] = 0.001
+P[0] = -0.001
     
 # Simulation for 50 measurements
 for i in range(1, iterations):    
