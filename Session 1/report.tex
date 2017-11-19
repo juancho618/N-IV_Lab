@@ -5,6 +5,7 @@
 \usepackage{graphicx}
 \usepackage{subcaption}
 \usepackage{geometry}
+\usepackage{float}
 \geometry{
 a4paper,
 total={170mm,257mm},
@@ -33,6 +34,10 @@ top=20mm,
 }
 
 \begin{document}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.5\linewidth]{./img/vub.png}
+    \end{figure}
     \title{Navigation and Intelligent Vehicles, Lab session 1 Report}
     \author{Juan Jose Soriano Escobar }
     \maketitle
@@ -168,6 +173,31 @@ top=20mm,
     From this point, we define for the given problem the different scenarios to be studied.
     
     \subsection{Simulation for Q = 10e-5 and R = 0.01}
+
+    \begin{figure}[H]
+        \begin{subfigure} {.5\textwidth}  
+            \centering 
+            \includegraphics[width=0.6\linewidth]{./img/r01q_.png}
+            \caption{Predicted signal from noisy measurements }
+        \end{subfigure}
+        \begin{subfigure}{.5\textwidth}            
+            \centering
+            \includegraphics[width=0.6\linewidth]{./img/r01q_K.png}
+            \caption{Kalman gain factor}
+        \end{subfigure}
+        \begin{subfigure} {.5\textwidth}  
+            \centering 
+            \includegraphics[width=0.6\linewidth]{./img/r01q_P.png}
+            \caption{Estimate error covariance}
+        \end{subfigure}
+        \begin{subfigure}{.5\textwidth}            
+            \centering
+            \includegraphics[width=0.6\linewidth]{./img/r01q_E.png}
+            \caption{Error measurements MSE (red) and ISE (blue)}
+        \end{subfigure}
+        \caption{Simulation graph results for R = 0.01 and Q = 10e-5.}
+        \label{fig:simulation1}
+    \end{figure}
     
     In the figure \ref{fig:simulation1} (a), is visible how the estimate voltage starts with relatively
     large variations in the first 20 iterations and in the ISE (Instant Square Error) in the section (c), 
@@ -175,70 +205,67 @@ top=20mm,
     in the section (b) and (d) for the Kalman gain itself and for the MSE (Mean Square Error), respectively.
     Where the MSE in the last iterations is close to 0.01 which is expected from the standard deviation of 
     the noise Gaussian function in the simulated measurements.
+    
+    \subsection{Simulation for Q = 10e-5 and R = 0.0001 (R increased on a factor of 1000)}
 
-    \begin{figure}
+    \begin{figure}[H]
         \begin{subfigure} {.5\textwidth}  
             \centering 
-            \includegraphics[width=0.8\linewidth]{./img/r01q_.png}
+            \includegraphics[width=0.6\linewidth]{./img/r00001q_.png}
             \caption{Predicted signal from noisy measurements }
         \end{subfigure}
         \begin{subfigure}{.5\textwidth}            
             \centering
-            \includegraphics[width=0.8\linewidth]{./img/r01q_K.png}
+            \includegraphics[width=0.6\linewidth]{./img/r00001q_K.png}
             \caption{Kalman gain factor}
         \end{subfigure}
         \begin{subfigure} {.5\textwidth}  
             \centering 
-            \includegraphics[width=0.8\linewidth]{./img/r01q_P.png}
+            \includegraphics[width=0.6\linewidth]{./img/r00001q_P.png}
             \caption{Estimate error covariance}
         \end{subfigure}
         \begin{subfigure}{.5\textwidth}            
             \centering
-            \includegraphics[width=0.8\linewidth]{./img/r01q_E.png}
-            \caption{Error measurements MSE (red) and ISE (blue)}
-        \end{subfigure}
-        \caption{Simulation graph results for R = 0.01 and Q = 10e-5.}
-        \label{fig:simulation1}
-    \end{figure}
-    
-    
-
-    Results
-
-    \subsection{Simulation for Q = 10e-5 and R = 0.0001 (R increased on a factor of 1000)} 
-    
-    When the measurement covariance is decreased by a factor of a thousand (R = 0.0001), it dos not 
-    significantly changes the behavior of the prediction, because the R is already smaller than the noise
-    in the measurement. As is illustrated in the \ref{fig:simulation2} the values and the predictions is nearly
-    the same as in the previous scenario. The only difference is the decimals precision of P,  consequence
-    of the equation (5) from \cite{LabManual} where R is added to K to later on update P.
-
-    \begin{figure}
-        \begin{subfigure} {.5\textwidth}  
-            \centering 
-            \includegraphics[width=0.8\linewidth]{./img/r00001q_.png}
-            \caption{Predicted signal from noisy measurements }
-        \end{subfigure}
-        \begin{subfigure}{.5\textwidth}            
-            \centering
-            \includegraphics[width=0.8\linewidth]{./img/r00001q_K.png}
-            \caption{Kalman gain factor}
-        \end{subfigure}
-        \begin{subfigure} {.5\textwidth}  
-            \centering 
-            \includegraphics[width=0.8\linewidth]{./img/r00001q_P.png}
-            \caption{Estimate error covariance}
-        \end{subfigure}
-        \begin{subfigure}{.5\textwidth}            
-            \centering
-            \includegraphics[width=0.8\linewidth]{./img/r00001q_E.png}
+            \includegraphics[width=0.6\linewidth]{./img/r00001q_E.png}
             \caption{Error measurements MSE (red) and ISE (blue)}
         \end{subfigure}
         \caption{Simulation graph results for R = 0.0001 and Q = 10e-5.}
         \label{fig:simulation2}
     \end{figure}
 
+    When the measurement covariance is decreased by a factor of a thousand (R = 0.0001), it dos not 
+    significantly changes the behavior of the prediction, because the R is already smaller than the noise
+    in the measurement. As is illustrated in the \ref{fig:simulation2} the values and the predictions is nearly
+    the same as in the previous scenario. The only difference is the decimals precision of P,  consequence
+    of the equation (5) from \cite{LabManual} where R is added to K to later on update P.
+
+
     \subsection{Simulation for Q = 10e-5 and R = 10 (R decreased on a factor of 1000)}
+
+    \begin{figure}[H]
+        \begin{subfigure} {.5\textwidth}  
+            \centering 
+            \includegraphics[width=0.6\linewidth]{./img/r10q_.png}
+            \caption{Predicted signal from noisy measurements }
+        \end{subfigure}
+        \begin{subfigure}{.5\textwidth}            
+            \centering
+            \includegraphics[width=0.6\linewidth]{./img/r10q_K.png}
+            \caption{Kalman gain factor}
+        \end{subfigure}
+        \begin{subfigure} {.5\textwidth}  
+            \centering 
+            \includegraphics[width=0.6\linewidth]{./img/r10q_P.png}
+            \caption{Estimate error covariance}
+        \end{subfigure}
+        \begin{subfigure}{.5\textwidth}            
+            \centering
+            \includegraphics[width=0.6\linewidth]{./img/r10q_E.png}
+            \caption{Error measurements MSE (red) and ISE (blue)}
+        \end{subfigure}
+        \caption{Simulation graph results for R = 10 and Q = 10e-5.}
+        \label{fig:simulation3}
+    \end{figure}
 
     On the other hand, when R is increased by a factor of a 1000 (R = 10) the results drastically changes for
     all the studies graphs as is presented on the \ref{fig:simulation3}. It starts by the measurement variance
@@ -249,96 +276,69 @@ top=20mm,
     taking more iterations to filter the noise and to reach the predictions precision obtained in the 
     previous scenarios.
 
-
-    \begin{figure}
-        \begin{subfigure} {.5\textwidth}  
-            \centering 
-            \includegraphics[width=0.8\linewidth]{./img/r10q_.png}
-            \caption{Predicted signal from noisy measurements }
-        \end{subfigure}
-        \begin{subfigure}{.5\textwidth}            
-            \centering
-            \includegraphics[width=0.8\linewidth]{./img/r10q_K.png}
-            \caption{Kalman gain factor}
-        \end{subfigure}
-        \begin{subfigure} {.5\textwidth}  
-            \centering 
-            \includegraphics[width=0.8\linewidth]{./img/r10q_P.png}
-            \caption{Estimate error covariance}
-        \end{subfigure}
-        \begin{subfigure}{.5\textwidth}            
-            \centering
-            \includegraphics[width=0.8\linewidth]{./img/r10q_E.png}
-            \caption{Error measurements MSE (red) and ISE (blue)}
-        \end{subfigure}
-        \caption{Simulation graph results for R = 10 and Q = 10e-5.}
-        \label{fig:simulation3}
-    \end{figure}
-    
-
     \subsection{Simulation for Q = 10e-8 and R = 0.01 (Q increased on a factor of 1000)}
     
-    Similarly to the scenario with R = 0.0001m when Q is decreased by a factor of a thousand it does not 
-    affect in a significantly results as is visible in the figure \ref{fig:simulation4}. In this case
-    again, P changes the decimal precision because Q is directly add to the prediction of P in the equation 
-    \ref{eq:2}.
-
-    \begin{figure}
+    \begin{figure}[H]
         \begin{subfigure} {.5\textwidth}  
             \centering 
-            \includegraphics[width=0.8\linewidth]{./img/r01q-8_.png}
+            \includegraphics[width=0.6\linewidth]{./img/r01q-8_.png}
             \caption{Predicted signal from noisy measurements }
         \end{subfigure}
         \begin{subfigure}{.5\textwidth}            
             \centering
-            \includegraphics[width=0.8\linewidth]{./img/r01q-8_K.png}
+            \includegraphics[width=0.6\linewidth]{./img/r01q-8_K.png}
             \caption{Kalman gain factor}
         \end{subfigure}
         \begin{subfigure} {.5\textwidth}  
             \centering 
-            \includegraphics[width=0.8\linewidth]{./img/r01q-8_P.png}
+            \includegraphics[width=0.6\linewidth]{./img/r01q-8_P.png}
             \caption{Estimate error covariance}
         \end{subfigure}
         \begin{subfigure}{.5\textwidth}            
             \centering
-            \includegraphics[width=0.8\linewidth]{./img/r01q-8_E.png}
+            \includegraphics[width=0.6\linewidth]{./img/r01q-8_E.png}
             \caption{Error measurements MSE (red) and ISE (blue)}
         \end{subfigure}
         \caption{Simulation graph results for R = 0.01 and Q = 10e-8.}
         \label{fig:simulation4}
     \end{figure}   
 
-    \subsection{Simulation for Q = 10e-8 and R = 0.01 (Q decreased on a factor of 1000)}
-    
     Similarly to the scenario with R = 0.0001m when Q is decreased by a factor of a thousand it does not 
     affect in a significantly results as is visible in the figure \ref{fig:simulation4}. In this case
     again, P changes the decimal precision because Q is directly add to the prediction of P in the equation 
     \ref{eq:2}.
+    
+    \subsection{Simulation for Q = 10e-8 and R = 0.01 (Q decreased on a factor of 1000)}
 
-    \begin{figure}
+    \begin{figure}[H]
         \begin{subfigure} {.5\textwidth}  
             \centering 
-            \includegraphics[width=0.8\linewidth]{./img/r01q-2_.png}
+            \includegraphics[width=0.6\linewidth]{./img/r01q-2_.png}
             \caption{Predicted signal from noisy measurements }
         \end{subfigure}
         \begin{subfigure}{.5\textwidth}            
             \centering
-            \includegraphics[width=0.8\linewidth]{./img/r01q-2_K.png}
+            \includegraphics[width=0.6\linewidth]{./img/r01q-2_K.png}
             \caption{Kalman gain factor}
         \end{subfigure}
         \begin{subfigure} {.5\textwidth}  
             \centering 
-            \includegraphics[width=0.8\linewidth]{./img/r01q-2_P.png}
+            \includegraphics[width=0.6\linewidth]{./img/r01q-2_P.png}
             \caption{Estimate error covariance}
         \end{subfigure}
         \begin{subfigure}{.5\textwidth}            
             \centering
-            \includegraphics[width=0.8\linewidth]{./img/r01q-2_E.png}
+            \includegraphics[width=0.6\linewidth]{./img/r01q-2_E.png}
             \caption{Error measurements MSE (red) and ISE (blue)}
         \end{subfigure}
         \caption{Simulation graph results for R = 0.01 and Q = 10e-2.}
         \label{fig:simulation5}
     \end{figure}
+     
+    Similarly to the scenario with R = 0.0001m when Q is decreased by a factor of a thousand it does not 
+    affect in a significantly results as is visible in the figure \ref{fig:simulation4}. In this case
+    again, P changes the decimal precision because Q is directly add to the prediction of P in the equation 
+    \ref{eq:2}.
 
     \subsection{Simulation for Q = 10e-2 and R = 0.01 (Q decreased on a factor of 1000)}
     
@@ -347,7 +347,31 @@ top=20mm,
 
 
     \subsection{What if the noise measurement is no longer zero mean?}
-    
+    \begin{figure}[H]
+        \begin{subfigure} {.5\textwidth}  
+            \centering 
+            \includegraphics[width=0.6\linewidth]{./img/nc_.png}
+            \caption{Predicted signal from noisy measurements }
+        \end{subfigure}
+        \begin{subfigure}{.5\textwidth}            
+            \centering
+            \includegraphics[width=0.6\linewidth]{./img/nc_K.png}
+            \caption{Kalman gain factor}
+        \end{subfigure}
+        \begin{subfigure} {.5\textwidth}  
+            \centering 
+            \includegraphics[width=0.6\linewidth]{./img/nc_P.png}
+            \caption{Estimate error covariance}
+        \end{subfigure}
+        \begin{subfigure}{.5\textwidth}            
+            \centering
+            \includegraphics[width=0.6\linewidth]{./img/nc_E.png}
+            \caption{Error measurements MSE (red) and ISE (blue)}
+        \end{subfigure}
+        \caption{Simulation with no zero center noise N(0.5, 0.01).}
+        \label{fig:simulation6}
+    \end{figure}
+
         All the results will be x value deviated from the truth voltage value. As is visible in
         the \ref{fig:simulation6} (a), the Filter will keep on trying to reduced the noise but 
         converging to ground truth plus the deviation in the mean (0.5 for the presented case). This will
@@ -357,33 +381,28 @@ top=20mm,
         To avoid this kind of results, before of applying the filter is recommended to normalize the measurements with the
         expected value.
     
-        \begin{figure}
-            \begin{subfigure} {.5\textwidth}  
-                \centering 
-                \includegraphics[width=0.8\linewidth]{./img/nc_.png}
-                \caption{Predicted signal from noisy measurements }
-            \end{subfigure}
-            \begin{subfigure}{.5\textwidth}            
-                \centering
-                \includegraphics[width=0.8\linewidth]{./img/nc_K.png}
-                \caption{Kalman gain factor}
-            \end{subfigure}
-            \begin{subfigure} {.5\textwidth}  
-                \centering 
-                \includegraphics[width=0.8\linewidth]{./img/nc_P.png}
-                \caption{Estimate error covariance}
-            \end{subfigure}
-            \begin{subfigure}{.5\textwidth}            
-                \centering
-                \includegraphics[width=0.8\linewidth]{./img/nc_E.png}
-                \caption{Error measurements MSE (red) and ISE (blue)}
-            \end{subfigure}
-            \caption{Simulation with no zero center noise N(0.5, 0.01).}
-            \label{fig:simulation6}
-        \end{figure}
-    
     \subsection{What happens if you change the initial value of the error covariance P?}
-    
+        
+    \begin{figure}[H]
+        \begin{subfigure} {.3\textwidth}  
+            \centering 
+            \includegraphics[width=0.6\linewidth]{./img/P0_.png}
+            \caption{P = 0 }
+        \end{subfigure}
+        \begin{subfigure}{.3\textwidth}            
+            \centering
+            \includegraphics[width=0.6\linewidth]{./img/P001_.png}
+            \caption{P = 0.001}
+        \end{subfigure}    
+        \begin{subfigure} {.3\textwidth}         
+            \centering
+            \includegraphics[width=0.6\linewidth]{./img/Pneg.png}
+            \caption{P = -0.001}
+        \end{subfigure}
+        \caption{Simulation for P = 0, P =  0.001 and P = -0.001}
+        \label{fig:simulation7}
+    \end{figure}
+
     I tried P with different values end the result did not changed much for big values or values bigger than 0.1 in general.
     The first critical value is when P = 0. In the \ref{fig:simulation7} (a) is visible how the filter is not able to estimate the
     voltage. This is the result of an indetermination in the K gain in the equation (7) from \cite{LabManual},
@@ -399,26 +418,6 @@ top=20mm,
 
     In accordance to this results, could be a value from ( 0, + inf.) and preferably higher than the estimate of
     the measurement variance R.
-
-    \begin{figure}
-        \begin{subfigure} {.3\textwidth}  
-            \centering 
-            \includegraphics[width=0.8\linewidth]{./img/P0_.png}
-            \caption{P = 0 }
-        \end{subfigure}
-        \begin{subfigure}{.3\textwidth}            
-            \centering
-            \includegraphics[width=0.8\linewidth]{./img/P001_.png}
-            \caption{P = 0.001}
-        \end{subfigure}    
-        \begin{subfigure} {.3\textwidth}         
-            \centering
-            \includegraphics[width=0.8\linewidth]{./img/Pneg.png}
-            \caption{P = -0.001}
-        \end{subfigure}
-        \caption{Simulation for P = 0, P =  0.001 and P = -0.001}
-        \label{fig:simulation7}
-    \end{figure}
     
 
     \subsection{Does the value of the Kalman gain K contain information?}
@@ -436,7 +435,5 @@ top=20mm,
     \bibliography{report}
     \bibliographystyle{ieeetr}
     \nocite{*}
-    % Implementation of Kalman Filter with Python Language ... pdf
-    % http://scottlobdell.me/2014/08/kalman-filtering-python-reading-sensor-input/
 
 \end{document}
