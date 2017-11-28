@@ -12,9 +12,9 @@ B: The input effect matrix.
 U: The control input.
 '''
 # simulation of the data
-Xreal_distance =  reduce(lambda c, x: c + [c[-1] + 10], range(100),[0])[1:]
-Xreal_speed = list(map(lambda x: 10, range(100)))
-real = np.vstack((Xreal_distance, Xreal_speed))
+# Xreal_distance =  reduce(lambda c, x: c + [c[-1] + 10], range(100),[0])[1:]
+# Xreal_speed = list(map(lambda x: 10, range(100)))
+# real = np.vstack((Xreal_distance, Xreal_speed))
 
 '''
 Kalman Definition functions
@@ -22,7 +22,7 @@ Kalman Definition functions
 def prediction(X, P, A, Q, B, U, W):
     X = np.dot(A, X) + W # + np.dot(B, U)
     P = np.dot(A, np.dot(P, A.T)) + Q # (A - no transpose because it is a scalar)
-    return X, P
+    return (X, P)
 
 def update(X, P, H, K, Y, R):
     MP = np.dot(H, X) # measurement prediction
@@ -34,14 +34,22 @@ def update(X, P, H, K, Y, R):
     
     return (X,P,K)
 
+def simulate_movement(A, X, q):            
+    process_model = np.dot(A, X) + np.matrix([[np.random.normal(0, np.sqrt(q*((dt**3)/3)))], [np.random.normal(0, np.sqrt(q*dt))]]) # TODO: validate model
+    return process_model
+
+
 
 '''
 values initialization
 '''
+
 iterations = 100
 dt = 1
 q = 0
 
+process_variance = 0
+sensor_variance = 1
 wk_distance = np.random.normal(0, np.sqrt(q*((dt**3)/3)),iterations) # noise in the position
 wk_velocity = np.random.normal(0, np.sqrt(q*dt),iterations)         # noise in the velocity
 W = np.vstack((wk_distance, wk_velocity)) # white noise function
@@ -49,7 +57,7 @@ W = np.vstack((wk_distance, wk_velocity)) # white noise function
 Q = np.matrix([[(dt**3)/3, (dt**2/2)],[(dt**2/2), dt]])
 R = np.random.normal(0, 1.0, iterations)
 X = np.matrix([[0.0],[0.0]]) # Initial X values
-P = np.matrix([[1., 0.5], [0.5, 2]])
+P = np.matrix([[2/(dt**2), 0.5*dt], [0.5*dt, 1.]])
 
 A = np.matrix([[1., dt], [0, 1.]]) # The state is a constant
 U = 0 # There is no control input (Aceleration!).
@@ -70,6 +78,14 @@ p_velocity.append((X.item(1,0)))
 '''
 Simulation
 '''
+# creatin simulated data
+data = []
+Xk = np.matrix([[0.0],[10.0]])
+print(q)
+for i in range(100):
+    data.append(Xk)
+    Xk = simulate_movement(A, Xk, q)
+
 for i in range(1, iterations):
     # prediction
     X, P = prediction(X, P, A, Q, B, U, np.matrix([[W[0][i]],[W[1][i]]]))
@@ -83,7 +99,7 @@ for i in range(1, iterations):
 Charts
 '''
 pylab.figure()
-pylab.plot(real[0],real[1],label='true measurements', color='r')
+pylab.plot(list(map(lambda x: x[0].item(0,0), data)), list(map(lambda x: x[1].item(0,0), data)),label='true measurements', color='r')
 pylab.plot(p_distance, p_velocity,'b-',label='Velocity estimate')
 # pylab.plot(x,color='g',label='truth value')
 pylab.legend()
@@ -91,6 +107,8 @@ pylab.xlabel('Distance')
 pylab.ylabel('Velocity [V]')
 pylab.title('Simulation results')
 pylab.show()
+
+
 
 #Z = x + noise #just for the first time
 #https://www.cl.cam.ac.uk/~rmf25/papers/Understanding%20the%20Basis%20of%20the%20Kalman%20Filter.pdf
