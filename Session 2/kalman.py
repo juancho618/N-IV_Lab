@@ -19,8 +19,8 @@ U: The control input.
 '''
 Kalman Definition functions
 '''
-def prediction(X, P, A, Q, B, U, W):
-    X = np.dot(A, X) + W # + np.dot(B, U)
+def prediction(X, P, A, Q, B, U):
+    X = np.dot(A, X) 
     P = np.dot(A, np.dot(P, A.T)) + Q # (A - no transpose because it is a scalar)
     return (X, P)
 
@@ -28,6 +28,7 @@ def update(X, P, H, K, Y, R):
     MP = np.dot(H, X) # measurement prediction
     residual = Y - MP # the residual of the prediction
     MPC = np.dot(H, np.dot(P, H))  + R    # measurement prediction covariance ( C- no transpose because it is a scalar)
+    print(MPC.shape)
     K = np.dot(P, np.dot(H, np.linalg.inv(MPC))) # kalman (C - no transpose because it is a scalar and np.inv()no used for escalars)
     X = X + np.dot(K, residual) # Updated State Estimate
     P = np.dot((np.identity(P.shape[0]) - np.dot(K, H)), P)# Updated State Covariance # old way: P = P - np.dot(K, np.dot(K, np.dot(MPC, K.T))) 
@@ -45,19 +46,17 @@ values initialization
 '''
 
 iterations = 100
-dt = 1
-q = 0
+dt = 1 # time differential
+q = 0 # process variance
+r = 1. # sensor variance
 
-process_variance = 0
-sensor_variance = 1
-wk_distance = np.random.normal(0, np.sqrt(q*((dt**3)/3)),iterations) # noise in the position
-wk_velocity = np.random.normal(0, np.sqrt(q*dt),iterations)         # noise in the velocity
-W = np.vstack((wk_distance, wk_velocity)) # white noise function
+
 
 Q = np.matrix([[(dt**3)/3, (dt**2/2)],[(dt**2/2), dt]])
-R = np.random.normal(0, 1.0, iterations)
+#Q = R = np.random.normal(0, q, iterations)
+R = np.random.normal(0, r, iterations)
 X = np.matrix([[0.0],[0.0]]) # Initial X values
-P = np.matrix([[2/(dt**2), 0.5*dt], [0.5*dt, 1.]])
+P = np.matrix([[ 1, 0], [0, 2/(dt**2)]])
 
 A = np.matrix([[1., dt], [0, 1.]]) # The state is a constant
 U = 0 # There is no control input (Aceleration!).
@@ -67,7 +66,7 @@ G = np.matrix([[(dt**2)/2],[ dt ] ])
 B = G
 H = np.matrix([[1., 0], [0, 1.]])
 Hi = 1
-Y = np.matrix([[real[0][0]],[real[1][0]]]) + R[0]
+
 K = np.zeros(iterations) # gain or blending factor initialization
 
 p_distance = []
@@ -81,26 +80,36 @@ Simulation
 # creatin simulated data
 data = []
 Xk = np.matrix([[0.0],[10.0]])
-print(q)
+
 for i in range(100):
     data.append(Xk)
     Xk = simulate_movement(A, Xk, q)
 
+Y = np.dot( 1, data[0]) + R[0] # measured position
+
 for i in range(1, iterations):
     # prediction
-    X, P = prediction(X, P, A, Q, B, U, np.matrix([[W[0][i]],[W[1][i]]]))
+    X, P = prediction(X, P, A, Q[i], B, U)
     p_distance.append(X.item(0,0)) # add predicted distance
-    p_velocity.append(X.item(1,0)) # add predicted velocity
     # update the values
     X, P, K = update(X, P, Hi, K, Y, R[i])
-    Y = np.matrix([[real[0][i]],[real[1][i]]]) + R[i] # next measurement value
+    Y = np.dot( 1, data[i]) + R[i] # next measurement value
+
+print(p_distance)
+
+# calculating velocity
+for i in range(2, len(p_distance)):
+    p_velocity.append((p_distance[i] - p_distance[i-1])/1)
+
+print(p_distance)
+print(p_velocity)
 
 '''
 Charts
 '''
 pylab.figure()
 pylab.plot(list(map(lambda x: x[0].item(0,0), data)), list(map(lambda x: x[1].item(0,0), data)),label='true measurements', color='r')
-pylab.plot(p_distance, p_velocity,'b-',label='Velocity estimate')
+pylab.plot(p_distance[:99], p_velocity,'b-',label='Velocity estimate')
 # pylab.plot(x,color='g',label='truth value')
 pylab.legend()
 pylab.xlabel('Distance')
