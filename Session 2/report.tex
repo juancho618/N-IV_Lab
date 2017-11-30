@@ -1,0 +1,91 @@
+\documentclass{article}
+    \usepackage{amssymb}
+    \usepackage{color}
+    \usepackage{listings}
+    \usepackage{graphicx}
+    \usepackage{subcaption}
+    \usepackage{geometry}
+    \usepackage{float}
+    \geometry{
+    a4paper,
+    total={170mm,257mm},
+    left=20mm,
+    top=20mm,
+    }
+    
+    \setlength{\parindent}{0em}
+    \setlength{\parskip}{1em} % length of the spacing
+    
+    \lstset{ % General setup for the package
+        language=Python,
+        basicstyle=\small\sffamily,
+        numbers=left,
+        numberstyle=\tiny,
+        frame=tb,
+        tabsize=4,
+        columns=fixed,
+        showstringspaces=false,
+        showtabs=false,
+        keepspaces,
+        commentstyle=\color{red},
+        keywordstyle=\color{blue},
+        emphstyle=\ttb\color{deepred},    
+        stringstyle=\color{deepgreen}
+    }
+    
+    \begin{document}
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.5\linewidth]{../Session 1/img/vub.png}
+        \end{figure}
+        \title{Navigation and Intelligent Vehicles, Lab session 2 Report}
+        \author{Juan Jose Soriano Escobar }
+        \maketitle
+        \newpage
+
+        \section{Simulated measurement data}
+        
+        This practical session is a little bit different as the first one in the sense that
+        this time we are trying to estimate or to "keep track" of the movement of  an object
+        or particle in one given dimension (1-D) with an unpredicted acceleration that could be
+        also interpreted as a noise.
+        
+        In order to simulate the data measurement, it is necessary first to define the movement of
+        the particle by a mathematical model as is describe in the equation \ref{eq:1} where the position
+        \textbf{\textit{x}} depends on the previous position and velocity plus the noise \textbf{\textit{w}}
+        that is given by changes of the acceleration in a given moment for an specific direction.
+
+        \begin{equation}\label{eq:1}
+            x(k + 1) = Ax(k) + Gw(k) 
+        \end{equation}
+
+        Once the movement of the particle is explained, it is needed to find a way to measure the position of 
+        the particle in order to compare and correct the predicted value. The measurement function is given by
+        the \ref{eq:2}, which contains \textbf{\textit{x}} as the current movement model of the particle + \textbf{\textit{v}}
+        functions that is the noise in the measurement of the position (variable of interest) of the particle in a time 
+        \textbf{\textit{k}}.
+
+        \begin{equation}\label{eq:2}
+            z(k) = Cx(k) + Hv(k)
+        \end{equation}\label{eq:2}
+
+        With the mathematical model defined, it is important to express the generation of the data on a emulated system
+        to play with the variables and visualize the results. For this project I used again python and the simulated data is expressed
+        in the listing \ref{lst:data}
+
+        \begin{lstlisting}[language=Python, caption= Prediction Kalman function, label={lst:data}]
+            data = []
+            Xk = np.matrix([[0.0],[10.0]])
+
+            def simulate_movement(A, X, q):            
+            process_model = np.dot(A, X) + 
+                            np.matrix([[np.random.normal(0, np.sqrt(q*((dt**3)/3)))], 
+                            [np.random.normal(0, np.sqrt(q*dt))]]) 
+            return process_model
+            
+            for i in range(100):
+                data.append(Xk)
+                Xk = simulate_movement(A, Xk, q)
+        \end{lstlisting}
+
+    \end{document}

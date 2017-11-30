@@ -21,15 +21,15 @@ Kalman Definition functions
 '''
 def prediction(X, P, A, Q, B, U):
     X = np.dot(A, X) 
-    P = np.dot(A, np.dot(P, A.T)) + Q # (A - no transpose because it is a scalar)
+    P = np.dot(A, np.dot(P, A.T)) + 0.00000000001 # (A - no transpose because it is a scalar)
     return (X, P)
 
 def update(X, P, H, K, Y, R):
     MP = np.dot(H, X) # measurement prediction
     residual = Y - MP # the residual of the prediction
-    MPC = np.dot(H, np.dot(P, H))  + R    # measurement prediction covariance ( C- no transpose because it is a scalar)
-    print(MPC.shape)
+    MPC = np.dot(H, np.dot(P, H))  +  R #Q    # measurement prediction covariance ( C- no transpose because it is a scalar)
     K = np.dot(P, np.dot(H, np.linalg.inv(MPC))) # kalman (C - no transpose because it is a scalar and np.inv()no used for escalars)
+    
     X = X + np.dot(K, residual) # Updated State Estimate
     P = np.dot((np.identity(P.shape[0]) - np.dot(K, H)), P)# Updated State Covariance # old way: P = P - np.dot(K, np.dot(K, np.dot(MPC, K.T))) 
     
@@ -52,11 +52,11 @@ r = 1. # sensor variance
 
 
 
-Q = np.matrix([[(dt**3)/3, (dt**2/2)],[(dt**2/2), dt]])
-#Q = R = np.random.normal(0, q, iterations)
+Q = np.dot(q,np.matrix([[(dt**3)/3, (dt**2/2)],[(dt**2/2), dt]]))
+#Q  = np.random.normal(0, q, iterations)
 R = np.random.normal(0, r, iterations)
 X = np.matrix([[0.0],[0.0]]) # Initial X values
-P = np.matrix([[ 1, 0], [0, 2/(dt**2)]])
+P = np.matrix([[ 1., 1.], [1., 2/(dt**2)]])
 
 A = np.matrix([[1., dt], [0, 1.]]) # The state is a constant
 U = 0 # There is no control input (Aceleration!).
@@ -89,7 +89,7 @@ Y = np.dot( 1, data[0]) + R[0] # measured position
 
 for i in range(1, iterations):
     # prediction
-    X, P = prediction(X, P, A, Q[i], B, U)
+    X, P = prediction(X, P, A, Q, B, U)
     p_distance.append(X.item(0,0)) # add predicted distance
     # update the values
     X, P, K = update(X, P, Hi, K, Y, R[i])
@@ -109,7 +109,7 @@ Charts
 '''
 pylab.figure()
 pylab.plot(list(map(lambda x: x[0].item(0,0), data)), list(map(lambda x: x[1].item(0,0), data)),label='true measurements', color='r')
-pylab.plot(p_distance[:99], p_velocity,'b-',label='Velocity estimate')
+pylab.plot(p_distance[:99], p_velocity,'b-',label='Position stimate estimate')
 # pylab.plot(x,color='g',label='truth value')
 pylab.legend()
 pylab.xlabel('Distance')
