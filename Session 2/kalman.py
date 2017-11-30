@@ -61,13 +61,13 @@ P = np.matrix([[ 1., 1.], [1., 2/(dt**2)]])
 A = np.matrix([[1., dt], [0, 1.]]) # The state is a constant
 U = 0 # There is no control input (Aceleration!).
 B = np.matrix([[0.0], [0.0]]) # There is no control input
-C = np.matrix([[1, 0]]) # The noisy measurement is direct
+C = np.matrix([[1, 1]]) # The noisy measurement is direct
 G = np.matrix([[(dt**2)/2],[ dt ] ])
 B = G
 H = np.matrix([[1., 0], [0, 1.]])
 Hi = 1
-
 K = np.zeros(iterations) # gain or blending factor initialization
+
 
 p_distance = []
 p_velocity = []
