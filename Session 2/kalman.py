@@ -22,7 +22,11 @@ Kalman Definition functions
 '''
 def prediction(X, P, A, Q, B, U):
     X = np.dot(A, X) 
+<<<<<<< HEAD
     P = np.dot(A, np.dot(P, A.T)) + Q # (A - no transpose because it is a scalar)
+=======
+    P = np.dot(A, np.dot(P, A.T)) + Q#0.0000000001#Q # (A - no transpose because it is a scalar)
+>>>>>>> 38a29072eeaec433c44318e904edaa817be1dedc
     return (X, P)
 
 def update(X, P, H, Y, R):
@@ -30,6 +34,11 @@ def update(X, P, H, Y, R):
     residual = Y - MP # the residual of the prediction
     MPC = np.dot(H, np.dot(P, H.T))  +  R #Q    # measurement prediction covariance ( C- no transpose because it is a scalar)
     K = np.dot(P, np.dot(H.T, MPC**-1)) # kalman (C - no transpose because it is a scalar and np.inv()no used for escalars)
+<<<<<<< HEAD
+=======
+    print(residual.shape)
+
+>>>>>>> 38a29072eeaec433c44318e904edaa817be1dedc
     X = X + np.dot(K, residual) # Updated State Estimate
     P = np.dot((np.identity(P.shape[0]) - np.dot(K, H)), P)# Updated State Covariance # old way: P = P - np.dot(K, np.dot(K, np.dot(MPC, K.T)))
 
@@ -47,7 +56,12 @@ values initialization
 '''
 
 iterations = 100
+<<<<<<< HEAD
 q = 0 # process variance
+=======
+dt = 1 # time differential
+q = 2 # process variance
+>>>>>>> 38a29072eeaec433c44318e904edaa817be1dedc
 r = 1. # sensor variance
 
 
@@ -56,17 +70,31 @@ Q = Q_discrete_white_noise(dim=2, dt=dt, var=q)
 #Q  = np.random.normal(0, q, iterations)
 R = np.random.normal(0, r, iterations)
 X = np.matrix([[0.0],[0.0]]) # Initial X values
+<<<<<<< HEAD
 #P = np.linalg.inv(np.matrix([[ r, r/dt], [r/dt, 2*r/(dt**2)]]))
 P = np.matrix([[ r, 0], [0, 2*r/(dt**2)]])
+=======
+P = np.linalg.inv(np.matrix([[ r, r/dt], [r/dt, 2*r/(dt**2)]]))
+
+>>>>>>> 38a29072eeaec433c44318e904edaa817be1dedc
 A = np.matrix([[1., dt], [0, 1.]]) # The state is a constant
 U = 0 # There is no control input (Aceleration!).
 B = np.matrix([[0.0], [0.0]]) # There is no control input
 C = np.matrix([[1, 0]]) # The noisy measurement is direct
+<<<<<<< HEAD
 B = G
 
 NEES = []
 NIS = []
 klist = []
+=======
+G = np.matrix([[(dt**2)/2],[ dt ] ])
+B = G
+H = np.matrix([[1., 0], [0, 1.]])
+Hi = 1
+K = np.zeros(iterations) # gain or blending factor initialization
+
+>>>>>>> 38a29072eeaec433c44318e904edaa817be1dedc
 plist = []
 p_distance = []
 p_velocity = []
@@ -75,7 +103,10 @@ p_distance.append((X.item(0,0)))
 p_velocity.append((X.item(1,0)))
 vel.append(X.item(1,0))
 plist.append(P.item(0,0))
+<<<<<<< HEAD
 klist.append(0)
+=======
+>>>>>>> 38a29072eeaec433c44318e904edaa817be1dedc
 
 '''
 Simulation
@@ -96,6 +127,7 @@ for i in range(1, iterations):
 
    
     # update the values
+<<<<<<< HEAD
     X, P, K = update(X, P, C, Y, R[i])
 
     Xs = data[i] - X
@@ -109,6 +141,13 @@ for i in range(1, iterations):
     plist.append(P.item(0,0))
     klist.append(K.item(0,0))
     Y = np.dot( C, data[i]) + R[i] # next measurement value
+=======
+    X, P, K = update(X, P, C, K, Y, R[i])
+    p_distance.append(X.item(0,0)) # add predicted distance
+    vel.append(X.item(1,0))
+    plist.append(P.item(0,0))
+    Y = np.dot( 1, data[i]) + R[i] # next measurement value
+>>>>>>> 38a29072eeaec433c44318e904edaa817be1dedc
 
 print(p_distance)
 
@@ -132,6 +171,7 @@ pylab.title('Simulation results')
 
 pylab.figure()
 pylab.plot(plist,color='g',label='estimate value')
+<<<<<<< HEAD
 
 
 pylab.figure()
@@ -145,6 +185,8 @@ pylab.plot(NIS,color='purple',label='estimate value')
 
 
 
+=======
+>>>>>>> 38a29072eeaec433c44318e904edaa817be1dedc
 pylab.show()
 
 
