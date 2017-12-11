@@ -7,7 +7,7 @@ import math
 
 dt = 0.05
 r = 5
-q=0.1
+q = 1
 
 
 class RadarSim(object):
@@ -49,13 +49,17 @@ def HJacobian_at(x):
     horiz_dist = x.item(0,0)
     altitude = x.item(2,0)
     denom = math.sqrt(horiz_dist**2 + altitude**2)
-    return np.matrix([[horiz_dist/denom, 0., altitude/denom, 0.]])
+
+    return np.matrix([[horiz_dist/denom, 0., altitude/denom, 0.],
+                    [altitude/(horiz_dist**2 + altitude**2), 0., -1*(horiz_dist/(horiz_dist**2 + altitude**2)), 0.]])
 
 def hx(x):
     """ compute measurement for slant range that
     would correspond to state x.
     """
-    return(math.sqrt(x[0]**2 + x[2]**2))
+    r = math.sqrt(x.item(0,0)**2 + x.item(2,0)**2)
+    a = math.atan2(x.item(2,0),x.item(0,0))
+    return(r, a)
 
 def prediction(X, P, A, Q, B, U):
     X = np.dot(A, X) 
@@ -91,7 +95,7 @@ for i in range(int(20/dt)):
 
 def getParameters(x):
     r = math.sqrt(x[0]**2 + x[2]**2)
-    ang = math.tan(x[2]/x[0])
+    ang = math.atan2(x[2],x[0])
 
     return r
 
